@@ -11,3 +11,6 @@ codes/__pycache__/
 datasets/
 models/
 logs/
+
+doc/figures/*.png
+!doc/figures/tsne_grid*.png
