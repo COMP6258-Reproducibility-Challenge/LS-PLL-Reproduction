@@ -2,7 +2,7 @@
 Author: Jedidiah-Zhang yanzhe_zhang@protonmail.com
 Date: 2025-05-09 18:08:41
 LastEditors: Jedidiah-Zhang yanzhe_zhang@protonmail.com
-LastEditTime: 2025-05-11 22:34:41
+LastEditTime: 2025-05-12 20:11:55
 FilePath: /LS-PLL-Reproduction/codes/utils.py
 Description: Utils used not related to the experiments
 '''
@@ -42,12 +42,12 @@ def extract_features(model, dataset, batch_size=128):
 
 
 def tsne_plot(features, labels, save_path, ylabel=None):
-    tsne = TSNE(n_components=2, perplexity=30, max_iter=3000, random_state=seed)
+    tsne = TSNE(n_components=2, init='pca', perplexity=30, max_iter=3000, random_state=seed)
     reduced = tsne.fit_transform(features)
     plt.figure(figsize=(4, 4))
     sns.scatterplot(x=reduced[:,0], y=reduced[:,1], hue=labels, palette='tab10', s=10, linewidth=0)
     # plt.title(title, fontsize=10)
-    if ylabel: plt.ylabel(ylabel, fontsize=10)
+    if ylabel: plt.ylabel(ylabel, fontsize=20)
     plt.xticks([]); plt.yticks([]); plt.legend([],[], frameon=False)
     plt.tight_layout()
     plt.savefig(save_path, dpi=300)

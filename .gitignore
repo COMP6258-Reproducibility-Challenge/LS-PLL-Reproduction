@@ -1,5 +1,6 @@
 
 tests/
+archive/
 codes/__pycache__/
 
 # datasets/FashionMNIST/

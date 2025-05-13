@@ -2,7 +2,7 @@
 Author: Jedidiah-Zhang yanzhe_zhang@protonmail.com
 Date: 2025-05-09 15:22:32
 LastEditors: Jedidiah-Zhang yanzhe_zhang@protonmail.com
-LastEditTime: 2025-05-11 20:09:27
+LastEditTime: 2025-05-12 18:20:37
 FilePath: /LS-PLL-Reproduction/codes/train.py
 Description: Functions relates to model training
 '''
@@ -12,6 +12,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 import torchvision.datasets as datasets
 from PIL import Image
 
@@ -163,7 +164,8 @@ def train_model(
     trainloader = DataLoader(trainset, batch_size=batch_size, shuffle=True)
     testloader = DataLoader(testset, batch_size=batch_size, shuffle=False)
     model = Model(num_classes=num_classes).to(device)
-    optimizer = optim.SGD(model.parameters(), lr=lr, momentum=momentum)
+    optimiser = optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=0.001, nesterov=True)
+    scheduler = ReduceLROnPlateau(optimiser, mode='min', factor=0.5, patience=3)
     criterion = LS_PLL_CrossEntropy(smoothing_rate=smoothing_rate)
     record = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}
 
@@ -179,12 +181,12 @@ def train_model(
             ema_batch = ema_accumulator[indices]
             candidate_batch = update_candidates(candidate_batch, target_batch, smoothing_rate)
 
-            optimizer.zero_grad()
+            optimiser.zero_grad()
             outputs = model(inputs)
 
             loss = criterion(outputs, candidate_batch)
             loss.backward()
-            optimizer.step()
+            optimiser.step()
 
             running_loss += loss.item()
             predictions = outputs.argmax(dim=1)
@@ -196,7 +198,6 @@ def train_model(
             )
             pseudo_truth[indices] = updated_pseudo
             ema_accumulator[indices] = updated_ema
-            
 
         train_loss = running_loss / len(trainloader)
         train_acc = correct / total * 100
@@ -219,6 +220,7 @@ def train_model(
             test_loss = running_test_loss / len(testloader)
             test_acc = correct / total * 100
 
+        scheduler.step(test_loss)
         record['train_loss'].append(train_loss)
         record['train_acc'].append(train_acc)
         record['val_loss'].append(test_loss)

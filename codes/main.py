@@ -2,7 +2,7 @@
 Author: Jedidiah-Zhang yanzhe_zhang@protonmail.com
 Date: 2025-05-06 16:42:21
 LastEditors: Jedidiah-Zhang yanzhe_zhang@protonmail.com
-LastEditTime: 2025-05-11 18:10:53
+LastEditTime: 2025-05-13 01:06:43
 FilePath: /LS-PLL-Reproduction/codes/main.py
 Description: Main script containing the complete pipeline for training and evaluating models with partial labels.
 '''
@@ -15,7 +15,7 @@ from prepare_data import *
 from LeNet5 import LeNet5
 from ResNet18 import ResNet18
 from ResNet56 import ResNet56
-from train import LS_PLL_CrossEntropy, PartialLabelDataset, train_model
+from train import PartialLabelDataset, train_model
 from utils import validate_path, extract_features, tsne_plot, plot_grid
 
 parser = argparse.ArgumentParser(description='Full experiments')
@@ -119,7 +119,7 @@ def main():
 
             # Train models with partial labels without label smoothing
             # using nn.CrossEntropy() as default.
-            model_path = MODEL_PATH + f"/{exp['Model'].name}/avgcl{avgCL}"
+            model_path = MODEL_PATH + f"/{exp['Dataset']}/avgcl{avgCL}"
             if not os.path.exists(model_path): os.makedirs(model_path)
             train_set = PartialLabelDataset(trainset, partial_labels_train, transform=transforms.ToTensor())
             test_set = PartialLabelDataset(testset, partial_labels_test, transform=transforms.ToTensor())

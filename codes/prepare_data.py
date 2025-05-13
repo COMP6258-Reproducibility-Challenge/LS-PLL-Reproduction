@@ -2,7 +2,7 @@
 Author: Jedidiah-Zhang yanzhe_zhang@protonmail.com
 Date: 2025-05-06 15:24:13
 LastEditors: Jedidiah-Zhang yanzhe_zhang@protonmail.com
-LastEditTime: 2025-05-11 20:34:07
+LastEditTime: 2025-05-13 01:05:01
 FilePath: /LS-PLL-Reproduction/codes/prepare_data.py
 Description: The codes to download, train and generate partial labels for datasets.
 '''
@@ -55,7 +55,7 @@ def train_dataset_model(Model, trainset, testset, num_classes):
     trainloader = DataLoader(trainset, batch_size=128, shuffle=True)
     testloader = DataLoader(testset, batch_size=128, shuffle=False)
     model = Model(num_classes=num_classes).to(device)
-    optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+    optimiser = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
     criterion = nn.CrossEntropyLoss()
 
     for epoch in range(100):
@@ -63,11 +63,11 @@ def train_dataset_model(Model, trainset, testset, num_classes):
         running_loss = total = correct = 0
         for inputs, labels in trainloader:
             inputs, labels = inputs.to(device), labels.to(device)
-            optimizer.zero_grad()
+            optimiser.zero_grad()
             outputs = model(inputs)
             loss = criterion(outputs, labels)
             loss.backward()
-            optimizer.step()
+            optimiser.step()
 
             running_loss += loss.item()
             predictions = outputs.argmax(dim=1)
@@ -171,9 +171,9 @@ if __name__ == "__main__":
     trainset, testset = load_dataset()
     true_labels = np.array(trainset.targets)
 
-    model = train_dataset_model(ResNet18, trainset, testset)
+    model = train_dataset_model(ResNet18, trainset, testset, num_classes=10)
     predictions = get_topk_predictions(model, trainset)
-    partial_labels = generate_partial_labels(true_labels, predictions, avg_num_cl=5)
+    partial_labels = generate_partial_labels(true_labels, predictions, avg_cl=5)
 
     with open('../datasets/pl_CIFAR10_avgcl5.pkl', 'wb') as f:
         pickle.dump(partial_labels, f)
