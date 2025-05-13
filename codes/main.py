@@ -2,7 +2,7 @@
 Author: Jedidiah-Zhang yanzhe_zhang@protonmail.com
 Date: 2025-05-06 16:42:21
 LastEditors: Jedidiah-Zhang yanzhe_zhang@protonmail.com
-LastEditTime: 2025-05-13 01:06:43
+LastEditTime: 2025-05-13 01:30:20
 FilePath: /LS-PLL-Reproduction/codes/main.py
 Description: Main script containing the complete pipeline for training and evaluating models with partial labels.
 '''
@@ -161,9 +161,9 @@ def main():
                 tsne_plot(features, labels, figure_path)
                 print(f"**** TSNE plot saved to {figure_path} ****")
 
-            # save records into the models folder
-            with open(model_path+'/records.pkl', 'wb') as f:
-                pickle.dump(records, f)
+        # save records into the models folder
+        with open(MODEL_PATH + f"/{exp['Dataset']}/records.pkl", 'wb') as f:
+            pickle.dump(records, f)
 
         # plot grid
         plot_grid(figure_paths, titles, rows=len(exp['AvgCL']), cols=len(SMOOTHING_RATE)+1, 

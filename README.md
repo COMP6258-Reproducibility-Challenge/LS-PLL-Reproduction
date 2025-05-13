@@ -2,7 +2,7 @@
 
 **This repository contains the code and resources to reproduce the experiments from the paper:**
 
-**[Does Label Smoothing Help Deep Partial Label Learning?](https://openreview.net/pdf?id=drjjxmi2Ha)** by Gong et al.
+**[Does Label Smoothing Help Deep Partial Label Learning?](https://openreview.net/pdf?id=drjjxmi2Ha)** by _Gong et al_.
 
 ## Overview
 
@@ -17,7 +17,7 @@ Partial Label Learning (PLL) addresses the problem where each training example i
 
 * **Model Architectures** : Implements LeNet5, ResNet18, and ResNet56.
 * **Datasets** : Support for FashionMNIST, KuzushijiMNIST, CIFAR-10, and CIFAR-100.
-* **Partial Label Generation** : Configurable average candidate label size (AvgCL) and Top-K predictions.
+* **Partial Label Generation** : Configurable average candidate label size (Avg.#CL) and Top-K predictions.
 * **Label Smoothing** : Custom `LS_PLL_CrossEntropy` loss for smoothing within candidate sets.
 * **Experiments Pipeline** : End-to-end script to train, generate partial labels, and evaluate.
 
