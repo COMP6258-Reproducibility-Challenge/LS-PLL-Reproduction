@@ -2,7 +2,7 @@
 Author: Jedidiah-Zhang yanzhe_zhang@protonmail.com
 Date: 2025-05-06 16:42:21
 LastEditors: Jedidiah-Zhang yanzhe_zhang@protonmail.com
-LastEditTime: 2025-05-13 01:30:20
+LastEditTime: 2025-05-13 12:33:08
 FilePath: /LS-PLL-Reproduction/codes/main.py
 Description: Main script containing the complete pipeline for training and evaluating models with partial labels.
 '''
@@ -129,8 +129,8 @@ def main():
                                                                     weighting_param=WEIGHTING_PARAM, num_classes=exp['NumClasses'])
             models[avgCL].append(non_smoothing_model)
             records[avgCL].append(non_smoothing_record)
-            torch.save(non_smoothing_model.state_dict(), model_path+"/r_noLS.npy")
-            print(f"**** Model saved to {model_path}/r_noLS.npy ****")
+            torch.save(non_smoothing_model.state_dict(), model_path+"/r_noLS.pth")
+            print(f"**** Model saved to {model_path}/r_noLS.pth ****")
 
             # generate and save plots
             figure_path = FIGURE_PATH + f"/tsne_{exp['Dataset']}_cl{avgCL}_r_noLS.png"
@@ -149,8 +149,8 @@ def main():
                                             num_classes=exp['NumClasses'], smoothing_rate=r)
                 models[avgCL].append(model)
                 records[avgCL].append(record)
-                torch.save(non_smoothing_model.state_dict(), model_path+f"/r_{r}.npy")
-                print(f"**** Model saved to {model_path}/r_{r}.npy ****")
+                torch.save(non_smoothing_model.state_dict(), model_path+f"/r_{r}.pth")
+                print(f"**** Model saved to {model_path}/r_{r}.pth ****")
 
                 # generate and save plots
                 figure_path = FIGURE_PATH + f"/tsne_{exp['Dataset']}_cl{avgCL}_r_{r}.png"
