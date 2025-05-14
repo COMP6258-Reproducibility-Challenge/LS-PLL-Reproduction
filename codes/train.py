@@ -2,7 +2,7 @@
 Author: Jedidiah-Zhang yanzhe_zhang@protonmail.com
 Date: 2025-05-09 15:22:32
 LastEditors: Jedidiah-Zhang yanzhe_zhang@protonmail.com
-LastEditTime: 2025-05-12 18:20:37
+LastEditTime: 2025-05-13 18:18:59
 FilePath: /LS-PLL-Reproduction/codes/train.py
 Description: Functions relates to model training
 '''
@@ -38,8 +38,8 @@ class LS_PLL_CrossEntropy(nn.Module):
         probs = F.softmax(logits, dim=1)
 
         # calc denominator for every sample
-        # fij_term = torch.logsumexp(logits, dim=1, keepdim=True)
-        fij_term = torch.log(torch.sum(torch.exp(probs), dim=1, keepdim=True))
+        fij_term = torch.logsumexp(probs, dim=1, keepdim=True)
+        # fij_term = torch.log(torch.sum(torch.exp(probs), dim=1, keepdim=True))
 
         # only accumulates on candidate set j∈Y_i: 
         weighted = candidates * (probs - fij_term)
@@ -108,8 +108,8 @@ def update_pesudo_truth(logits, candidates, softmax_accumulator=None, weighting_
         softmax_accumulator (Tensor): previous EMA accumulator [batch_size, num_classes]
         weighting_param (float): EMA decay factor η
     returns:
-        updated_pseudo: LongTensor of shape (B,), new pseudo-label indices
-        softmax_accumulator: updated EMA accumulator [batch_size, num_classes]
+        updated_pseudo (Tensor): new pseudo-label indices [batch_size, ]
+        softmax_accumulator (Tensor): updated EMA accumulator [batch_size, num_classes]
     """
     if softmax_accumulator is None:
         softmax_accumulator = torch.zeros_like(logits)
