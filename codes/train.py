@@ -2,7 +2,7 @@
 Author: Jedidiah-Zhang yanzhe_zhang@protonmail.com
 Date: 2025-05-09 15:22:32
 LastEditors: Jedidiah-Zhang yanzhe_zhang@protonmail.com
-LastEditTime: 2025-05-13 18:18:59
+LastEditTime: 2025-05-14 19:41:24
 FilePath: /LS-PLL-Reproduction/codes/train.py
 Description: Functions relates to model training
 '''
@@ -95,7 +95,7 @@ def init_pesudo_truth(candidates):
     probs = candidates / counts                         # [batch_size, num_classes]
     sampled = torch.multinomial(probs, num_samples=1)   # [batch_size, 1]
 
-    pesudo_truth = sampled.squeeze(1)                  # [batch_size,]
+    pesudo_truth = sampled.squeeze(1)                   # [batch_size,]
     return pesudo_truth
 
 

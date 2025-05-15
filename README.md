@@ -1,8 +1,7 @@
 # LS-PLL-Reproduction
 
-**This repository contains the code and resources to reproduce the experiments from the paper:**
-
-**[Does Label Smoothing Help Deep Partial Label Learning?](https://openreview.net/pdf?id=drjjxmi2Ha)** by _Gong et al_.
+> **This repository contains the code and resources to reproduce the experiments from the paper:**
+> **[Does Label Smoothing Help Deep Partial Label Learning?](https://openreview.net/pdf?id=drjjxmi2Ha)** by _Gong et al_.
 
 ## Overview
 
@@ -20,6 +19,31 @@ Partial Label Learning (PLL) addresses the problem where each training example i
 * **Partial Label Generation** : Configurable average candidate label size (Avg.#CL) and Top-K predictions.
 * **Label Smoothing** : Custom `LS_PLL_CrossEntropy` loss for smoothing within candidate sets.
 * **Experiments Pipeline** : End-to-end script to train, generate partial labels, and evaluate.
+
+## Experimental Configuration
+
+The hyperparameters and experiments are defined in `codes/main.py`:
+
+* **BATCH_SIZE** : 128
+* **LEARNING_RATE** : 0.01
+* **EPOCHS** : 200
+* **WEIGHTING_PARAM** : 0.9
+* **MOMENTUM** : 0.9
+* **SMOOTHING_RATE** : [0.1, 0.3, 0.5, 0.7, 0.9]
+* **EXPERIMENTS** :
+  
+  | Dataset | Model | k | Avg.#CL |
+  | ---- | ---- | ---- | ---- |
+  | Fashion-MNIST | LeNet-5 | 6 | 3, 4, 5 |
+  | Kuzushiji-MNIST | LeNet-5 | 6 | 3, 4, 5 |
+  | CIFAR-10 | ResNet-18 | 6 | 3, 4, 5 |
+  | CIFAR-100 | ResNet-56 | 20 | 7, 9, 11 |
+
+## Example FashionMNIST TSNE Grid
+
+We provide sample TSNE plots illustrating feature representations on test sets under different candidate label sizes and smoothing configurations. In each grid, columns represent smoothing rates (no smoothing, r=0.1, 0.3, …, 0.9) and rows correspond to Avg.#CL levels.
+
+![TSNE Grid for FashionMNIST](doc/figures/tsne_grid_FashionMNIST.png)
 
 ## Repository Structure
 
@@ -40,22 +64,6 @@ LS-PLL-Reproduction/
 └── README.md                # This file
 ```
 
-## Experimental Configuration
-
-The hyperparameters and experiments are defined in `codes/main.py`:
-
-* **BATCH_SIZE** : 128
-* **LEARNING_RATE** : 0.01
-* **EPOCHS** : 200
-* **WEIGHTING_PARAM** : 0.9
-* **MOMENTUM** : 0.9
-* **SMOOTHING_RATE** : [0.1, 0.3, 0.5, 0.7, 0.9]
-* **EXPERIMENTS** :
-  * FashionMNIST, LeNet5, Avg.#CL ∈ {3,4,5}, TopK=6
-  * KuzushijiMNIST, LeNet5, Avg.#CL ∈ {3,4,5}, TopK=6
-  * CIFAR-10, ResNet18, Avg.#CL ∈ {3,4,5}, TopK=6
-  * CIFAR-100, ResNet56, Avg.#CL ∈ {7,9,11}, TopK=20
-
 ## Requirements
 
 * Python 3.13+
@@ -73,7 +81,7 @@ The hyperparameters and experiments are defined in `codes/main.py`:
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/Jedidiah-Zhang/LS-PLL-Reproduction.git
+   git clone https://github.com/COMP6258-Reproducibility-Challenge/LS-PLL-Reproduction.git
    cd LS-PLL-Reproduction
    ```
 
