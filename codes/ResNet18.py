@@ -11,7 +11,6 @@ import torch.nn as nn
 from torchvision.models import resnet18
 
 class ResNet18(nn.Module):
-    name = 'ResNet18'
     def __init__(self, num_classes):
         super(ResNet18, self).__init__()
         # Load the ResNet18 model directly from torchvision without pre-trained weights

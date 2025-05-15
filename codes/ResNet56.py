@@ -41,7 +41,6 @@ class Bottleneck(nn.Module):
 
 
 class ResNet56(nn.Module):
-    name = 'ResNet56'
     def __init__(self, num_classes):
         super(ResNet56, self).__init__()
         

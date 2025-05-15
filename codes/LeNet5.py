@@ -2,7 +2,7 @@
 Author: Jedidiah-Zhang yanzhe_zhang@protonmail.com
 Date: 2025-05-07 00:03:25
 LastEditors: Jedidiah-Zhang yanzhe_zhang@protonmail.com
-LastEditTime: 2025-05-10 17:20:23
+LastEditTime: 2025-05-15 17:44:36
 FilePath: /LS-PLL-Reproduction/codes/LeNet5.py
 Description: LeNet5 model implementation.
 '''
@@ -10,7 +10,6 @@ Description: LeNet5 model implementation.
 import torch.nn as nn
 
 class LeNet5(nn.Module):
-    name = 'LeNet5'
     def __init__(self, num_classes):
         super(LeNet5, self).__init__()
         self.features = nn.Sequential(
