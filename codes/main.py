@@ -2,7 +2,7 @@
 Author: Jedidiah-Zhang yanzhe_zhang@protonmail.com
 Date: 2025-05-06 16:42:21
 LastEditors: Jedidiah-Zhang yanzhe_zhang@protonmail.com
-LastEditTime: 2025-05-15 18:08:36
+LastEditTime: 2025-05-15 18:24:39
 FilePath: /LS-PLL-Reproduction/codes/main.py
 Description: Main script containing the complete pipeline for training and evaluating models with partial labels.
 '''
@@ -101,21 +101,21 @@ def main():
                 print(f"**** Model saved to {dataset_model_path} ****")
 
             # load, or generate and load partial label datasets for both train and test sets
-            traindata_path = f"{DATASET_PATH}/pl_{exp['Dataset']}_avgcl{avgCL}_train.npy"
+            traindata_path = f"{DATASET_PATH}/pl_random_{exp['Dataset']}_avgcl{avgCL}_train.npy"
             if Path(traindata_path).exists(): partial_labels_train = np.load(traindata_path)
             else:
-                print(f"**** Generating partial labels for {exp['Dataset']} with avgCL {avgCL} ****")
-                predictions_train = get_topk_predictions(model, trainset, k=exp['TopK'])
+                print(f"**** Generating random partial labels for {exp['Dataset']} with avgCL {avgCL} ****")
+                predictions_train = get_random_predictions(model, trainset, k=exp['TopK'])
                 partial_labels_train, _ = generate_partial_labels(true_labels_train, predictions_train, 
                                                                 avg_cl=avgCL, k=exp['TopK'], 
                                                                 num_classes=exp['NumClasses'])
                 np.save(traindata_path, partial_labels_train)
                 print(f"**** Partial labels saved to {traindata_path} ****")
 
-            testdata_path = f"{DATASET_PATH}/pl_{exp['Dataset']}_avgcl{avgCL}_test.npy"
+            testdata_path = f"{DATASET_PATH}/pl_random_{exp['Dataset']}_avgcl{avgCL}_test.npy"
             if Path(testdata_path).exists(): partial_labels_test = np.load(testdata_path)
             else:
-                predictions_test = get_topk_predictions(model, testset, k=exp['TopK'])
+                predictions_test = get_random_predictions(model, testset, k=exp['TopK'])
                 partial_labels_test, _ = generate_partial_labels(true_labels_test, predictions_test, 
                                                                 avg_cl=avgCL, k=exp['TopK'], 
                                                                 num_classes=exp['NumClasses'])
@@ -128,18 +128,18 @@ def main():
             if not os.path.exists(model_path): os.makedirs(model_path)
             train_set = PartialLabelDataset(trainset, partial_labels_train, transform=transforms.ToTensor())
             test_set = PartialLabelDataset(testset, partial_labels_test, transform=transforms.ToTensor())
-            print(f"**** Training {exp['Model'].__name__} on partial labelled {exp['Dataset']} (Avg.#CL={avgCL}, no label smoothing) ****")
+            print(f"**** Training {exp['Model'].__name__} on randomly partial labelled {exp['Dataset']} (Avg.#CL={avgCL}, no label smoothing) ****")
             non_smoothing_model, non_smoothing_record = train_model(
                 exp['Model'], train_set, test_set, num_epochs=EPOCHS, 
                 batch_size=BATCH_SIZE, lr=LEARNING_RATE, momentum=MOMENTUM, 
                 weighting_param=WEIGHTING_PARAM, num_classes=exp['NumClasses'])
             models[avgCL].append(non_smoothing_model)
             records[avgCL].append(non_smoothing_record)
-            torch.save(non_smoothing_model.state_dict(), model_path+"/r_noLS.pth")
-            print(f"**** Model saved to {model_path}/r_noLS.pth ****")
+            torch.save(non_smoothing_model.state_dict(), model_path+"/r_noLS_random.pth")
+            print(f"**** Model saved to {model_path}/r_noLS_random.pth ****")
 
             # generate and save plots
-            figure_path = FIGURE_PATH + f"/tsne_{exp['Dataset']}_cl{avgCL}_r_noLS.png"
+            figure_path = FIGURE_PATH + f"/tsne_{exp['Dataset']}_cl{avgCL}_r_noLS_random.png"
             figure_paths.append(figure_path)
             titles.append(f"({chr(97+plot_idx)}) w/o LS")
             plot_idx += 1
@@ -149,18 +149,18 @@ def main():
 
             # train models with label smoothing across different noise levels
             for r in SMOOTHING_RATE:
-                print(f"\n**** Training {exp['Model'].__name__} on partial labelled {exp['Dataset']} (Avg.#CL={avgCL}, smoothing rate={r}) ****")
+                print(f"\n**** Training {exp['Model'].__name__} on randomly partial labelled {exp['Dataset']} (Avg.#CL={avgCL}, smoothing rate={r}) ****")
                 model, record = train_model(
                     exp['Model'], train_set, test_set, num_epochs=EPOCHS, batch_size=BATCH_SIZE, 
                     lr=LEARNING_RATE, momentum=MOMENTUM, weighting_param=WEIGHTING_PARAM, 
                     num_classes=exp['NumClasses'], smoothing_rate=r)
                 models[avgCL].append(model)
                 records[avgCL].append(record)
-                torch.save(non_smoothing_model.state_dict(), model_path+f"/r_{r}.pth")
-                print(f"**** Model saved to {model_path}/r_{r}.pth ****")
+                torch.save(non_smoothing_model.state_dict(), model_path+f"/r_{r}_random.pth")
+                print(f"**** Model saved to {model_path}/r_{r}_random.pth ****")
 
                 # generate and save plots
-                figure_path = FIGURE_PATH + f"/tsne_{exp['Dataset']}_cl{avgCL}_r_{r}.png"
+                figure_path = FIGURE_PATH + f"/tsne_{exp['Dataset']}_cl{avgCL}_r_{r}_random.png"
                 figure_paths.append(figure_path)
                 titles.append(f"({chr(97+len(titles))}) w/ LS, r={r}")
                 plot_idx += 1
@@ -169,13 +169,13 @@ def main():
                 print(f"**** TSNE plot saved to {figure_path} ****")
 
         # save records into the models folder
-        with open(MODEL_PATH + f"/{exp['Dataset']}/records.pkl", 'wb') as f:
+        with open(MODEL_PATH + f"/{exp['Dataset']}/records_random.pkl", 'wb') as f:
             pickle.dump(records, f)
 
         # plot grid
         plot_grid(figure_paths, titles, 
             rows=len(exp['AvgCL']), cols=len(SMOOTHING_RATE)+1, 
-            save_path=FIGURE_PATH+f"/tsne_grid_{exp['Dataset']}.png")
+            save_path=FIGURE_PATH+f"/tsne_grid_{exp['Dataset']}_random.png")
 
 if __name__ == "__main__":
     main()

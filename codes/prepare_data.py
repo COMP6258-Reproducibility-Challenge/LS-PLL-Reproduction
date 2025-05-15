@@ -2,7 +2,7 @@
 Author: Jedidiah-Zhang yanzhe_zhang@protonmail.com
 Date: 2025-05-06 15:24:13
 LastEditors: Jedidiah-Zhang yanzhe_zhang@protonmail.com
-LastEditTime: 2025-05-13 01:05:01
+LastEditTime: 2025-05-15 18:23:38
 FilePath: /LS-PLL-Reproduction/codes/prepare_data.py
 Description: The codes to download, train and generate partial labels for datasets.
 '''
@@ -136,7 +136,7 @@ def get_random_predictions(model, dataset, batch_size=128, k=6):
                 random_k = np.random.choice(possible_labels, size=k, replace=False)
                 random_preds.append(random_k)
 
-            randomk_preds.append(np.arrays(random_preds))
+            randomk_preds.append(np.array(random_preds))
         randomk_preds = np.concatenate(randomk_preds, axis=0)
     return randomk_preds
 
