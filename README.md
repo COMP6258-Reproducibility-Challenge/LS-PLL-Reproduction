@@ -16,7 +16,7 @@ Partial Label Learning (PLL) addresses the problem where each training example i
 
 * **Model Architectures** : Implements LeNet5, ResNet18, and ResNet56.
 * **Datasets** : Support for FashionMNIST, KuzushijiMNIST, CIFAR-10, and CIFAR-100.
-* **Partial Label Generation** : Configurable average candidate label size (Avg.#CL) and Top-K predictions.
+* **Partial Label Generation** : Configurable average candidate label size (Avg.#CL) and Top-K/Random predictions.
 * **Label Smoothing** : Custom `LS_PLL_CrossEntropy` loss for smoothing within candidate sets.
 * **Experiments Pipeline** : End-to-end script to train, generate partial labels, and evaluate.
 
